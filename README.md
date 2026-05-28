@@ -34,6 +34,20 @@ npx tsx bin/bitte-launch.ts telegram \
   --token $TELEGRAM_BOT_TOKEN
 ```
 
+### See it work with no credentials
+
+No bot token and no network needed. This runs the full launcher stack
+(manifest -> egress guard -> chat proxy -> tool-arg vet -> trace) against an
+in-memory fake agent:
+
+```bash
+npx tsx examples/offline_demo.ts
+```
+
+It walks three turns: a benign reply, a valid `transfer` that vetting allows,
+and a malformed `transfer` (string amount, missing recipient) that vetting
+blocks before it could ever execute.
+
 Or use it from code:
 
 ```ts
@@ -104,7 +118,8 @@ bitte-telegram-launcher/
     fakes/fake_bitte_agent.ts
     *.test.ts
   examples/
-    launch_example_agent.ts
+    launch_example_agent.ts  // real bot (needs token)
+    offline_demo.ts          // credential-free, runs the full stack
 ```
 
 ## CLI
@@ -120,7 +135,7 @@ bitte-launch discord  --manifest <url> --token <token> [--allowlist host1,host2]
 npm test
 ```
 
-20+ deterministic tests using a `FakeBitteAgent` test double; no real network, no real Telegram, no real Discord.
+40+ deterministic tests using a `FakeBitteAgent` test double; no real network, no real Telegram, no real Discord.
 
 ## License
 
