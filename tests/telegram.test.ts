@@ -179,6 +179,43 @@ describe("launchTelegram", () => {
     expect(ctx.replies[0]).toContain("amount is required");
   });
 
+  it("forwards the apiKey as a bearer token on the chat request", async () => {
+    const agent = new FakeBitteAgent();
+    const handle = await launchTelegram({
+      platform: "telegram",
+      manifestUrl: agent.manifestUrl,
+      token: "x",
+      apiKey: "sk-bitte-secret",
+      fetchImpl: agent.asFetch(),
+      telegrafCtor: StubTelegraf,
+      dryRun: true,
+      logger: () => {},
+    });
+    const bot = handle.bot as StubTelegraf;
+    await bot.textHandler!(makeCtx("hello there"));
+    const chatRequest = agent.requests.find((r) => r.url === agent.chatUrl && r.method === "POST");
+    expect(chatRequest).toBeDefined();
+    expect(chatRequest!.headers.authorization).toBe("Bearer sk-bitte-secret");
+  });
+
+  it("sends no authorization header when no apiKey is configured", async () => {
+    const agent = new FakeBitteAgent();
+    const handle = await launchTelegram({
+      platform: "telegram",
+      manifestUrl: agent.manifestUrl,
+      token: "x",
+      fetchImpl: agent.asFetch(),
+      telegrafCtor: StubTelegraf,
+      dryRun: true,
+      logger: () => {},
+    });
+    const bot = handle.bot as StubTelegraf;
+    await bot.textHandler!(makeCtx("hello there"));
+    const chatRequest = agent.requests.find((r) => r.url === agent.chatUrl && r.method === "POST");
+    expect(chatRequest).toBeDefined();
+    expect(chatRequest!.headers.authorization).toBeUndefined();
+  });
+
   it("stop() forwards the reason to telegraf", async () => {
     const agent = new FakeBitteAgent();
     const handle = await launchTelegram({

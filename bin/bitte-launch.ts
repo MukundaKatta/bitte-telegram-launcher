@@ -16,12 +16,14 @@ program
   .requiredOption("--manifest <url>", "Bitte agent manifest URL (.well-known/ai-plugin.json or base origin)")
   .requiredOption("--token <token>", "Telegram bot token from @BotFather (or set TELEGRAM_BOT_TOKEN)")
   .option("--allowlist <hosts>", "comma-separated egress allowlist (chat host is auto-added)", "")
-  .action(async (cmdOpts: { manifest: string; token: string; allowlist: string }) => {
+  .option("--api-key <key>", "bearer token for the Bitte agent chat endpoint (or set BITTE_API_KEY)")
+  .action(async (cmdOpts: { manifest: string; token: string; allowlist: string; apiKey?: string }) => {
     const handle = await BitteLauncher.run({
       platform: "telegram",
       manifestUrl: cmdOpts.manifest,
       token: cmdOpts.token,
       allowlist: parseAllowlist(cmdOpts.allowlist),
+      apiKey: cmdOpts.apiKey ?? process.env.BITTE_API_KEY,
     });
     process.once("SIGINT", () => handle.stop("SIGINT"));
     process.once("SIGTERM", () => handle.stop("SIGTERM"));
@@ -33,12 +35,14 @@ program
   .requiredOption("--manifest <url>", "Bitte agent manifest URL")
   .requiredOption("--token <token>", "Discord bot token (or set DISCORD_BOT_TOKEN)")
   .option("--allowlist <hosts>", "comma-separated egress allowlist (chat host is auto-added)", "")
-  .action(async (cmdOpts: { manifest: string; token: string; allowlist: string }) => {
+  .option("--api-key <key>", "bearer token for the Bitte agent chat endpoint (or set BITTE_API_KEY)")
+  .action(async (cmdOpts: { manifest: string; token: string; allowlist: string; apiKey?: string }) => {
     const handle = await BitteLauncher.run({
       platform: "discord",
       manifestUrl: cmdOpts.manifest,
       token: cmdOpts.token,
       allowlist: parseAllowlist(cmdOpts.allowlist),
+      apiKey: cmdOpts.apiKey ?? process.env.BITTE_API_KEY,
     });
     process.once("SIGINT", () => handle.stop());
     process.once("SIGTERM", () => handle.stop());
