@@ -55,6 +55,7 @@ export async function launchDiscord(opts: DiscordLaunchOptions): Promise<Discord
     chatUrl: manifest.chatUrl,
     guard,
     manifestUrl: opts.manifestUrl,
+    apiKey: opts.apiKey,
   });
   const trace = new TraceCollector();
 

@@ -63,6 +63,7 @@ export async function launchTelegram(opts: TelegramLaunchOptions): Promise<Teleg
     chatUrl: manifest.chatUrl,
     guard,
     manifestUrl: opts.manifestUrl,
+    apiKey: opts.apiKey,
   });
   const trace = new TraceCollector();
   const history = new Map<string, Array<{ role: "user" | "assistant"; content: string }>>();

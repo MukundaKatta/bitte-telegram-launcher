@@ -64,6 +64,10 @@ export interface LauncherOptions {
   token: string;
   // Egress allowlist hostnames. The chat endpoint host is auto-added.
   allowlist?: string[];
+  // Optional bearer token for Bitte agents that require authentication on
+  // their chat endpoint. When set, it is sent as `Authorization: Bearer ...`
+  // on every chat turn. It is never written to the turn log.
+  apiKey?: string;
   // Test seam. If provided, we skip real network calls and route through
   // this fetch implementation.
   fetchImpl?: typeof fetch;
